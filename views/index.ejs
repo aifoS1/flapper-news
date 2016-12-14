@@ -1,0 +1,200 @@
+<html>
+  <head>
+    <title>My Angular App!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style> .glyphicon-thumbs-up { cursor:pointer } </style>
+    <script src="/javascripts/angularApp.js"></script>
+  </head>
+  <body ng-app="flapperNews">
+  	<nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+	    <ul class="nav navbar-nav">
+	      <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+	      <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+	      <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+	      <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
+	    </ul>
+  </nav>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <ui-view></ui-view>
+      </div>
+
+    <script type="text/ng-template" id="/register.html">
+		  <div class="page-header">
+		    <h1>Flapper News</h1>
+		  </div>
+
+		  <div ng-show="error" class="alert alert-danger row">
+		    <span>{{ error.message }}</span>
+		  </div>
+
+		  <form ng-submit="register()"
+		    style="margin-top:30px;">
+		    <h3>Register</h3>
+
+		    <div class="form-group">
+		      <input type="text"
+		      class="form-control"
+		      placeholder="Username"
+		      ng-model="user.username"></input>
+		    </div>
+		    <div class="form-group">
+		      <input type="password"
+		      class="form-control"
+		      placeholder="Password"
+		      ng-model="user.password"></input>
+		    </div>
+		    <button type="submit" class="btn btn-primary">Register</button>
+		  </form>
+		</script>
+
+		<script type="text/ng-template" id="/login.html">
+		  <div class="page-header">
+		    <h1>Flapper News</h1>
+		  </div>
+
+		  <div ng-show="error" class="alert alert-danger row">
+		    <span>{{ error.message }}</span>
+		  </div>
+
+		  <form ng-submit="logIn()"
+		    style="margin-top:30px;">
+		    <h3>Log In</h3>
+
+		    <div class="form-group">
+		      <input type="text"
+		      class="form-control"
+		      placeholder="Username"
+		      ng-model="user.username"></input>
+		    </div>
+		    <div class="form-group">
+		      <input type="password"
+		      class="form-control"
+		      placeholder="Password"
+		      ng-model="user.password"></input>
+		    </div>
+		    <button type="submit" class="btn btn-primary">Log In</button>
+		  </form>
+		</script>
+      
+    <script type="text/ng-template" id="/home.html">
+      <div class="page-header">
+        <h1>Flapper News</h1>
+      </div>
+    <!-- // iterate through array of posts using angular's ng-repeat directive and then order by updates in descending order - filters are seprated by pipes |-->
+      <div ng-repeat="post in posts | orderBy: '-upvotes'">
+      <!-- //ng-click allows us to invoke a function incrementUpvotes. onclick of the  ^ will add a vote to this post -->
+        <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)"></span>
+        <span class="glyphicon glyphicon-thumbs-down" ng-click="downVotePost(post)"></span>
+        {{post.upvotes}}
+        <span style="font-size:20px; margin-left:10px;">
+           <!--  //show post link if ng-show evaluates to true (if there is a link) -->
+          <a href="{{post.link}}" ng-show="post.link">
+            {{post.title}}
+          </a>
+          <!--  //ng-hide is the inverse of ng-show, we will hide the title without a link if there is a link. If no link then the span with a title will show. -->
+          <span ng-hide="post.link">
+            {{post.title}} |
+          </span>
+          <span ng-show="post.author">
+					  posted by {{post.author}} |
+					</span>
+					<!-- // show comment count -->
+					<span ng-show="post.comments">
+					  comments: {{post.comments.length}} |
+					</span>
+
+          <span>
+          <!-- //using post id from db so comment is referenced to the correct post -->
+            <a href="#/posts/{{post._id}}">view comments</a>
+          </span>
+        </span>
+      </div>
+
+     <!--//ng-submit allows us to invoke a function 'addPost' in angular, similar to JS' 'on-click'. ng-model='title' binds $scope.title to the whatever is entered into the input. ng-show='isLoggedIn' is there because if true, allow the user to add a post if not do not show form -->
+	     <div ng-hide="isLoggedIn()">
+			  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add or vote on a post.</h3>
+			</div>
+			<div ng-show="isLoggedIn()" ng-show="show-form">
+			<!--//show form on click of button -->
+				<button class="btn btn-primary" style="margin-top:30px;" ng-click="showForm=true">Add a new post</button>
+
+				<button class="btn btn-primary" style="margin-top:30px;" ng-click="showForm=false">Hide post form</button>
+
+       <form ng-show="showForm" ng-submit="addPost()"  
+      			style="margin-top:30px;">
+
+        
+        
+	        <div class="form-group">
+	          <input type="text" class="form-control" placeholder="title" ng-model="title"/>
+	        </div>
+
+	        <div class="form-group">
+	          <input type="text" 
+	          			class="form-control" 
+	          			placeholder="link" 
+	          			ng-model="link"/>
+	        </div>
+	        
+	        <button type="submit" 
+	        				class="btn btn-primary">Add post
+	        </button>
+        
+      </form>
+			</div>
+    </script>
+
+    <script type="text/ng-template" id="/posts.html">
+     <!-- //post template -->
+    	<div class="page-header">
+	      <h3>
+	        <a ng-show="post.link" href="{{post.link}}">
+	          {{post.title}}
+	        </a>
+	        <span ng-hide="post.link">
+	          {{post.title}}
+	        </span>
+	      </h3>
+	    </div>
+
+	    <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+	      <span class="glyphicon glyphicon-thumbs-up"
+	        ng-click="incrementUpvotes(comment)"></span>
+
+	      {{comment.upvotes}} - by {{comment.author}}
+	      <span style="font-size:20px; margin-left:10px;">
+	        {{comment.body}}
+	      </span>
+	    </div>
+
+    <form ng-submit="addComment()"
+      style="margin-top:30px;">
+
+      <div ng-hide="isLoggedIn()">
+			  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+			</div>
+
+      <h3>Add a new comment</h3>
+
+      <div class="form-group">
+        <input type="text"
+        class="form-control"
+        placeholder="Comment"
+        ng-show="isLoggedIn()"
+        ng-model="body"></input>
+      </div>
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+
+    <a href="#/home"><button class="btn btn-primary">Back to posts</button></a>
+  </script>
+    
+      <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>
