@@ -1,8 +1,9 @@
-//flapperNews is the module name and app name that is loaded in the html. The app needs to be loaded onto the html via ng-app since angular first looks for the app name then finds a controller from there. The 'MainCtrl' is the name of the controller on the flapperNews module that is loaded onto the html which contains the $scope. The $scope allows controllers to interact and share data with angular templates.  For example, $scope.test = 'hello world' will be loaded via html as {{ test }} and you'll see 'hello world' on the browser. This is an example of Angular's two-way binding.
+//flapperNews is the module name and app name that is loaded in the html. The app needs to be loaded onto the html via ng-app since angular first looks for the app name then finds a controller from there. The controllers (e.g. 'MainCtrl', 'PostCtrl') on the flapperNews module are loaded onto the html views and contain the $scope. The $scope allows controllers to interact and share data with angular templates.  For example, $scope.test = 'hello world' will be loaded via html as {{ test }} and you'll see 'hello world' on the browser. This is an example of Angular's two-way binding.
+
 // the ui-router dependancy is injected into the app because it's an external module.
 var app = angular.module('flapperNews', ['ui.router']);
 
-//with ui-router included, config() is used to set up the home state and posts state will display comments assoicated w a post via $stateProvider and $urlRouterProvider. Otherwise() is used to redirect unspecified routes. {id} is a route parameter that will be made available to the controller
+//with ui-router included, config() is used to set up the home state and posts state will display comments associated w a post via $stateProvider and $urlRouterProvider. Otherwise() is used to redirect unspecified routes. {id} is a route parameter that will be made available to the controller
 
 
 app.config([
@@ -116,10 +117,8 @@ app.controller('MainCtrl', ['$scope', 'posts', 'auth',
 	};
 	// increment upvote by 1 on each click of thumbs up next to post
 	$scope.incrementUpvotes = function(post) {
-		// if ($scope.count <= 1) {
 		//calling upvote function on posts service
 			posts.upvote(post);
-		// }
 	}
 	//downvote post by 1 on click of thumbs down next to post
 	$scope.downVotePost = function(post) {

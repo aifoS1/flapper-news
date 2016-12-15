@@ -18,12 +18,15 @@ require('./models/Users');
 //require passport auth configuration file
 require('./config/passport');
 
-// get cfenv (cloud foundry environment) and ask it to parse the environment variable
-var cfenv = require('cfenv');
-var appEnv = cfenv.getAppEnv();
+//if on bluemix we can connect get VCAP services so using this as a truth for production
+if (process.env.VCAP_APP_PORT) {
+  // get cfenv (cloud foundry environment) and ask it to parse the environment variable
+  var cfenv = require('cfenv');
 
-// Within the application environment (appenv) there's a services object
-var services = appEnv.getServices();
+  var appEnv = cfenv.getAppEnv();
+
+  // Within the application environment (appenv) there's a services object
+  var services = appEnv.getServices();
 
 // take the first bound MongoDB service and extract it's credentials object
 var credentials = services['Compose for MongoDB-wk'].credentials;
@@ -31,9 +34,6 @@ var credentials = services['Compose for MongoDB-wk'].credentials;
 //I got these notes/instructions from IBM docs:
 // Within the credentials, an entry ca_certificate_base64 contains the SSL pinning key We convert that from a string into a Buffer entry in an array which we use when connecting.
 var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
-
-//if on bluemix we can connect get VCAP services so using this as a truth for production
-if (process.env.VCAP_APP_PORT) {
 	//grabbing the URI for the database from the credentials service object I got from the application environment
 	var credentialsURI = credentials.uri;
 	//I got these instructions for the SSL settings from IBM docs:
