@@ -82,7 +82,7 @@ app.controller('AuthCtrl', [
 	  };
 	}
 ])
-//navbar controller to easily tell if use is logged in or not by using the isLoggIn,  currentUser, and logOut methods from the auth factory
+//navbar controller to easily tell if user is logged in or not by using the isLoggIn,  currentUser, and logOut methods from the auth factory
 app.controller('NavCtrl', [
 	'$scope',
 	'auth',
@@ -101,7 +101,7 @@ app.controller('MainCtrl', ['$scope', 'posts', 'auth',
 	$scope.isLoggedIn = auth.isLoggedIn;
 	//get username from auth
 	$scope.username = auth.currentUser;
-	// bind a function to the scope that pushed a new post to an array of posts on $scope when form is submitted
+	// bind a function to the scope that pushes a new post to an array of posts on $scope when form is submitted
 	$scope.addPost = function() {
 		// dont allow user to submit empty title
 	  if(!$scope.title || $scope.title === '') { return; }
@@ -126,24 +126,6 @@ app.controller('MainCtrl', ['$scope', 'posts', 'auth',
 		//calling downvote function on posts service
 		posts.downvote(post)
 	}
- //  $scope.count =0;
-	// $scope.clickCount = function() {
-	// 	console.log('count')
-		
-	// 	var max_count = 1;
-
-	// 	while ($scope.count <= max_count) {
-	// 		$scope.count += 1;
-	// 	}
-
-	// }
-		
-		// if ($scope.count <= max_count) {
-		//  	return true;
-		//   } else { 
-		//  	 	return false; 
-		//  	 }
-		// }; 
 }])
 
 //using a service for a posts object, this helps with code organization and lets you share code across an app by injecting the service. Injecting $http service for routing and the $auth service I created to send the JWT token to the server on authenticated requests. Have to pass the headers: {Authorization: 'Bearer '+auth.getToken()} object as the last argument for $http calls for the create, upvote, addComment, and upvoteComment since thouse routes require an auth token. 
@@ -153,10 +135,10 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
     posts: []
   };
 
- // retrieve posts using angulars' $http service to query posts route. The sucess funtion allows me to bind function that will be executed when the request return
+ // retrieve posts using angulars' $http service to query posts route. The success function allows me to bind function that will be executed when the request returns
   o.getAll = function() {
   	return $http.get('/posts').success(function(data){
-  		// use the angular.copy() method to create a deep copy of the returned data. This ensures that the $scope.posts variable in MainCtrl will also be updated, ensuring the new values are reflect in our view.
+  		// use the angular.copy() method to create a deep copy of the returned data. This ensures that the $scope.posts variable in MainCtrl will also be updated, ensuring the new values are reflected in our view.
   		angular.copy(data, o.posts)
   	})
   }

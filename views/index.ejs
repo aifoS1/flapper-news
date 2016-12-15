@@ -87,7 +87,7 @@
       </div>
     <!-- // iterate through array of posts using angular's ng-repeat directive and then order by updates in descending order - filters are seprated by pipes |-->
       <div ng-repeat="post in posts | orderBy: '-upvotes'">
-      <!-- //ng-click allows us to invoke a function incrementUpvotes. onclick of the  ^ will add a vote to this post -->
+      <!-- //ng-click allows us to invoke a function incrementUpvotes/downVotePost(post). onclick of the thumbs-up/down icon will add/subtract a vote to this post -->
         <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)"></span>
         <span class="glyphicon glyphicon-thumbs-down" ng-click="downVotePost(post)"></span>
         {{post.upvotes}}
